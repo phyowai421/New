@@ -355,4 +355,930 @@
             <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-4">
                 <div>
                     <h2 class="text-lg font-bold text-slate-900">လစဉ် ဝင်ငွေ/ထွက်ငွေ မျှော်မှန်းချက် (Financial Projection)</h2>
-                    <p class="text-
+                    <p class="text-xs text-slate-500">လုပ်ငန်း၏ ဘဏ္ဍာရေး အဝင်အထွက် ခန့်မှန်းချက်များကို စာရင်းသွင်းပါ</p>
+                </div>
+                <button id="addFinanceBtn" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold px-3.5 py-2 rounded-lg flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-plus"></i> ငွေစာရင်း သွင်းရန်
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                    <span class="text-xs font-semibold text-slate-500 uppercase">ခန့်မှန်း စုစုပေါင်း ဝင်ငွေ</span>
+                    <div class="text-2xl font-bold text-emerald-600 mt-1" id="finTotalIncome">0 ကျပ်</div>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                    <span class="text-xs font-semibold text-slate-500 uppercase">ခန့်မှန်း စုစုပေါင်း ကုန်ကျစရိတ်</span>
+                    <div class="text-2xl font-bold text-rose-600 mt-1" id="finTotalExpense">0 ကျပ်</div>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                    <span class="text-xs font-semibold text-slate-500 uppercase">ခန့်မှန်း အသားတင် အမြတ်ငွေ</span>
+                    <div class="text-2xl font-bold text-brand-600 mt-1" id="finNetProfit">0 ကျပ်</div>
+                </div>
+            </div>
+
+            <!-- Transactions Table -->
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="px-4 py-3 bg-slate-50 border-b border-slate-200 font-bold text-xs text-slate-700 uppercase">
+                    ဘဏ္ဍာရေး စာရင်းအသေးစိတ်
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="border-b border-slate-200 text-slate-500 bg-slate-50/50">
+                                <th class="p-3">အမျိုးအစား</th>
+                                <th class="p-3">ခေါင်းစဉ် / အကြောင်းအရာ</th>
+                                <th class="p-3">အမျိုးအစားခွဲ (Category)</th>
+                                <th class="p-3 text-right">ပမာဏ (ကျပ်)</th>
+                                <th class="p-3 text-center">လုပ်ဆောင်ချက်</th>
+                            </tr>
+                        </thead>
+                        <tbody id="financeTableBody">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: MARKETING & CONTENT PLANNER -->
+        <section id="tab-marketing" class="tab-content hidden space-y-6">
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900">Marketing & Content Planner</h2>
+                    <p class="text-xs text-slate-500">ဆိုရှယ်မီဒီယာ၊ ကြော်ငြာနှင့် ပရိုမိုးရှင်း အစီအစဉ်များ ရေးဆွဲပါ</p>
+                </div>
+                <button id="addMarketingBtn" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold px-3.5 py-2 rounded-lg flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-plus"></i> Content အသစ်ထည့်ရန်
+                </button>
+            </div>
+
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="border-b border-slate-200 text-slate-500 bg-slate-50">
+                                <th class="p-3">ပလက်ဖောင်း / ချန်နယ်</th>
+                                <th class="p-3">ခေါင်းစဉ် / Content Topic</th>
+                                <th class="p-3">တင်မည့်ရက်စွဲ</th>
+                                <th class="p-3">အမျိုးအစား</th>
+                                <th class="p-3 text-center">အခြေအနေ</th>
+                                <th class="p-3 text-center">လုပ်ဆောင်ချက်</th>
+                            </tr>
+                        </thead>
+                        <tbody id="marketingTableBody">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 6: DAILY TASKS & EISENHOWER MATRIX -->
+        <section id="tab-tasks" class="tab-content hidden space-y-6">
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900">နေ့စဉ် To-Do Tasks နှင့် အရေးပါမှု ဦးစားပေးခြင်း</h2>
+                    <p class="text-xs text-slate-500">Eisenhower Matrix စနစ်ဖြင့် လုပ်ငန်းတာဝန်များကို စီမံပါ</p>
+                </div>
+                <button id="addTaskBtn" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold px-3.5 py-2 rounded-lg flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-plus"></i> Task အသစ်ထည့်ရန်
+                </button>
+            </div>
+
+            <!-- Task Filters -->
+            <div class="flex gap-2">
+                <button class="task-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 text-white transition" data-filter="all">အားလုံး</button>
+                <button class="task-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 transition" data-filter="urgent">အရေးကြီးဆုံး (Urgent)</button>
+                <button class="task-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 transition" data-filter="pending">လုပ်ဆောင်ဆဲ</button>
+                <button class="task-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 transition" data-filter="completed">ပြီးမြောက်ပြီး</button>
+            </div>
+
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="border-b border-slate-200 text-slate-500 bg-slate-50">
+                                <th class="p-3 w-10 text-center">စစ်ဆေး</th>
+                                <th class="p-3">လုပ်ငန်းတာဝန်ခေါင်းစဉ်</th>
+                                <th class="p-3">ဦးစားပေးအဆင့် (Priority)</th>
+                                <th class="p-3">သတ်မှတ်ရက်</th>
+                                <th class="p-3 text-center">အခြေအနေ</th>
+                                <th class="p-3 text-center">လုပ်ဆောင်ချက်</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tasksTableBody">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-slate-200 py-4 mt-auto no-print text-center text-xs text-slate-500">
+        <p>BizPlanner PRO - လုပ်ငန်းရှင်များအတွက် ဒစ်ဂျစ်တယ် လစဉ်စီမံခန့်ခွဲမှုစနစ် (All data is saved securely in your browser storage).</p>
+    </footer>
+
+    <!-- MODAL POPUPS -->
+    <!-- Goal Modal -->
+    <div id="goalModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 id="goalModalTitle" class="text-base font-bold text-slate-900">Goal အသစ်ထည့်သွင်းရန်</h3>
+                <button onclick="closeModal('goalModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="goalForm" class="space-y-3 text-xs">
+                <input type="hidden" id="goalId">
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">ပန်းတိုင် ခေါင်းစဉ် (Goal Title)</label>
+                    <input type="text" id="goalTitleInput" required class="w-full border border-slate-300 rounded-lg p-2.5 outline-none focus:ring-1 focus:ring-brand-500" placeholder="ဥပမာ - လစဉ်ရောင်းအား ကျပ်သိန်း ၁၀၀ ရရှိရန်">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">အမျိုးအစား (Category)</label>
+                    <select id="goalCategoryInput" class="w-full border border-slate-300 rounded-lg p-2.5 outline-none focus:ring-1 focus:ring-brand-500">
+                        <option value="အရောင်းနှင့် ဝင်ငွေ">အရောင်းနှင့် ဝင်ငွေ</option>
+                        <option value="မားကတ်တင်းနှင့် ဖောက်သည်">မားကတ်တင်းနှင့် ဖောက်သည်</option>
+                        <option value="လုပ်ငန်းလည်ပတ်မှု">လုပ်ငန်းလည်ပတ်မှု</option>
+                        <option value="ဘဏ္ဍာရေးနှင့် အဖွဲ့အစည်း">ဘဏ္ဍာရေးနှင့် အဖွဲ့အစည်း</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">လက်ရှိတန်ဖိုး (Current)</label>
+                        <input type="number" id="goalCurrentInput" value="0" class="w-full border border-slate-300 rounded-lg p-2.5 outline-none focus:ring-1 focus:ring-brand-500">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">ပန်းတိုင်တန်ဖိုး (Target)</label>
+                        <input type="number" id="goalTargetInput" value="100" class="w-full border border-slate-300 rounded-lg p-2.5 outline-none focus:ring-1 focus:ring-brand-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">ယူနစ် (Unit - ဥပမာ ကျပ်၊ ဦးရေ)</label>
+                    <input type="text" id="goalUnitInput" value="ကျပ်" class="w-full border border-slate-300 rounded-lg p-2.5 outline-none focus:ring-1 focus:ring-brand-500">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('goalModal')" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-600 hover:bg-slate-50">မလုပ်တော့ပါ</button>
+                    <button type="submit" class="px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 font-semibold">သိမ်းဆည်းမည်</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Finance Modal -->
+    <div id="financeModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="text-base font-bold text-slate-900">ဘဏ္ဍာရေး စာရင်းသွင်းရန်</h3>
+                <button onclick="closeModal('financeModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="financeForm" class="space-y-3 text-xs">
+                <input type="hidden" id="financeId">
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">အမျိုးအစား</label>
+                    <select id="finTypeInput" class="w-full border border-slate-300 rounded-lg p-2.5 outline-none focus:ring-1 focus:ring-brand-500">
+                        <option value="income">ဝင်ငွေ (Income)</option>
+                        <option value="expense">ထွက်ငွေ/စရိတ် (Expense)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">ခေါင်းစဉ် / အကြောင်းအရာ</label>
+                    <input type="text" id="finTitleInput" required class="w-full border border-slate-300 rounded-lg p-2.5 outline-none focus:ring-1 focus:ring-brand-500" placeholder="ဥပမာ - ရုံးခန်းငှားခ၊ ပစ္စည်းရောင်းရငွေ">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">အမျိုးအစားခွဲ (Category)</label>
+                    <select id="finCatInput" class="w-full border border-slate-300 rounded-lg p-2.5 outline-none focus:ring-1 focus:ring-brand-500">
+                        <option value="အရောင်းဝင်ငွေ">အရောင်းဝင်ငွေ</option>
+                        <option value="ဝန်ဆောင်ခဝင်ငွေ">ဝန်ဆောင်ခဝင်ငွေ</option>
+                        <option value="လစာနှင့် လုပ်အားခ">လစာနှင့် လုပ်အားခ</option>
+                        <option value="ငှားရမ်းခနှင့် ဘေလ်">ငှားရမ်းခနှင့် ဘေလ်</option>
+                        <option value="မားကတ်တင်းနှင့် ကြော်ငြာ">မားကတ်တင်းနှင့် ကြော်ငြာ</option>
+                        <option value="အထွေထွေ ကုန်ကျစရိတ်">အထွေထွေ ကုန်ကျစရိတ်</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">ပမာဏ (ကျပ်)</label>
+                    <input type="number" id="finAmountInput" required min="0" class="w-full border border-slate-300 rounded-lg p-2.5 outline-none focus:ring-1 focus:ring-brand-500" placeholder="0">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('financeModal')" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-600 hover:bg-slate-50">မလုပ်တော့ပါ</button>
+                    <button type="submit" class="px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 font-semibold">စာရင်းသွင်းမည်</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Marketing Modal -->
+    <div id="marketingModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="text-base font-bold text-slate-900">Content / Marketing အစီအစဉ် ထည့်ရန်</h3>
+                <button onclick="closeModal('marketingModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="marketingForm" class="space-y-3 text-xs">
+                <input type="hidden" id="mktId">
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">ပလက်ဖောင်း / ချန်နယ်</label>
+                    <select id="mktPlatformInput" class="w-full border border-slate-300 rounded-lg p-2.5 outline-none focus:ring-1 focus:ring-brand-500">
+                        <option value="Facebook Page">Facebook Page</option>
+                        <option value="TikTok">TikTok Video</option>
+                        <option value="Telegram Channel">Telegram Channel</option>
+                        <option value="Viber Community">Viber Community</option>
+                        <option value="Website / Blog">Website / Blog</option>
+                        <option value="Email Newsletter">Email Newsletter</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">ခေါင်းစဉ် / Content Topic</label>
+                    <input type="text" id="mktTitleInput" required class="w-full border border-slate-300 rounded-lg p-2.5 outline-none focus:ring-1 focus:ring-brand-500" placeholder="ဥပမာ - ပစ္စည်းသစ် မိတ်ဆက် ဗီဒီယို တင်ရန်">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">တင်မည့်ရက်စွဲ</label>
+                        <input type="date" id="mktDateInput" required class="w-full border border-slate-300 rounded-lg p-2 outline-none focus:ring-1 focus:ring-brand-500">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">အမျိုးအစား</label>
+                        <select id="mktTypeInput" class="w-full border border-slate-300 rounded-lg p-2.5 outline-none focus:ring-1 focus:ring-brand-500">
+                            <option value="Video/Reel">Video / Reel</option>
+                            <option value="Image Post">Image Post</option>
+                            <option value="Article/Blog">Article / Blog</option>
+                            <option value="Ad Promotion">Ad Promotion</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('marketingModal')" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-600 hover:bg-slate-50">မလုပ်တော့ပါ</button>
+                    <button type="submit" class="px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 font-semibold">သိမ်းဆည်းမည်</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Task Modal -->
+    <div id="taskModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="text-base font-bold text-slate-900">Task အသစ်ထည့်သွင်းရန်</h3>
+                <button onclick="closeModal('taskModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="taskForm" class="space-y-3 text-xs">
+                <input type="hidden" id="taskId">
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">လုပ်ငန်းတာဝန် ခေါင်းစဉ်</label>
+                    <input type="text" id="taskTitleInput" required class="w-full border border-slate-300 rounded-lg p-2.5 outline-none focus:ring-1 focus:ring-brand-500" placeholder="ဥပမာ - ဘဏ်စာရင်း စစ်ဆေးရန်">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">ဦးစားပေးအဆင့်</label>
+                        <select id="taskPriorityInput" class="w-full border border-slate-300 rounded-lg p-2.5 outline-none focus:ring-1 focus:ring-brand-500">
+                            <option value="urgent">အရေးကြီးဆုံး (Urgent & Important)</option>
+                            <option value="high">အရေးကြီး (Important)</option>
+                            <option value="normal">သာမန် (Normal)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">သတ်မှတ်ရက်</label>
+                        <input type="date" id="taskDateInput" required class="w-full border border-slate-300 rounded-lg p-2 outline-none focus:ring-1 focus:ring-brand-500">
+                    </div>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('taskModal')" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-600 hover:bg-slate-50">မလုပ်တော့ပါ</button>
+                    <button type="submit" class="px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 font-semibold">သိမ်းဆည်းမည်</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- APPLICATION JAVASCRIPT -->
+    <script>
+        // State Management
+        const myanmarMonths = ["ဇန်နဝါရီ", "ဖေဖော်ဝါရီ", "မတ်", "ဧပြီ", "မေ", "ဇွန်", "ဇူလိုင်", "သြဂုတ်", "စက်တင်ဘာ", "အောက်တိုဘာ", "နိုဝင်ဘာ", "ဒီဇင်ဘာ"];
+        
+        let currentDate = new Date();
+        let currentYear = currentDate.getFullYear();
+        let currentMonth = currentDate.getMonth(); // 0 - 11
+
+        let appData = {
+            motto: "",
+            goals: [],
+            weeks: {
+                1: { theme: "", tasks: "" },
+                2: { theme: "", tasks: "" },
+                3: { theme: "", tasks: "" },
+                4: { theme: "", tasks: "" }
+            },
+            finance: [],
+            marketing: [],
+            tasks: []
+        };
+
+        let financeChartInstance = null;
+        let activeTaskFilter = 'all';
+
+        // LocalStorage Key generator based on Year & Month
+        function getStorageKey() {
+            return `bizplanner_${currentYear}_${currentMonth}`;
+        }
+
+        // Load Data from localStorage or initialize defaults
+        function loadData() {
+            const saved = localStorage.getItem(getStorageKey());
+            if (saved) {
+                try {
+                    appData = JSON.parse(saved);
+                } catch (e) {
+                    console.error("Failed to parse saved data", e);
+                    initDefaultData();
+                }
+            } else {
+                initDefaultData();
+            }
+            renderAll();
+        }
+
+        function initDefaultData() {
+            appData = {
+                motto: "ဖောက်သည် စိတ်ကျေနပ်မှု အမြင့်ဆုံးရရှိစေရန်နှင့် ရောင်းအား ၂ ဆ တိုးမြှင့်မည်။",
+                goals: [
+                    { id: 1, title: "လစဉ် ရောင်းအား ကျပ်သိန်း ၁၅၀ ရရှိရန်", category: "အရောင်းနှင့် ဝင်ငွေ", current: 85, target: 150, unit: "သိန်းကျပ်" },
+                    { id: 2, title: "Facebook Page Follower အသစ် ၅,၀၀၀ တိုးမြှင့်ရန်", category: "မားကတ်တင်းနှင့် ဖောက်သည်", current: 3200, target: 5000, unit: "ဦး" }
+                ],
+                weeks: {
+                    1: { theme: "Planning & Campaign Launch", tasks: "- လစဉ် ဘတ်ဂျက် အတည်ပြုရန်\n- မားကတ်တင်း ကြော်ငြာ အသစ်စတင်ရန်" },
+                    2: { theme: "Active Sales & Outreach", tasks: "- ဖောက်သည်ဟောင်းများထံ ဆက်သွယ်ရန်\n- ပရိုမိုးရှင်း ကမ်ပိန်း အရှိန်မြှင့်ရန်" },
+                    3: { theme: "Operations & Mid Review", tasks: "- ပစ္စည်းလက်ကျန် စစ်ဆေးရန်\n- ကြားဖြတ် ရောင်းအား ဆန်းစစ်ရန်" },
+                    4: { theme: "Monthly Closing & Audit", tasks: "- လချုပ် စာရင်း ပိတ်ရန်\n- နောက်လအတွက် စီမံချက် ဆွဲရန်" }
+                },
+                finance: [
+                    { id: 1, type: "income", title: "ပစ္စည်းလက်ကား ရောင်းရငွေ", category: "အရောင်းဝင်ငွေ", amount: 12000000 },
+                    { id: 2, type: "expense", title: "ရုံးခန်းနှင့် သိုလှောင်ရုံ ငှားခ", category: "ငှားရမ်းခနှင့် ဘေလ်", amount: 1500000 },
+                    { id: 3, type: "expense", title: "Facebook Ad Budget", category: "မားကတ်တင်းနှင့် ကြော်ငြာ", amount: 800000 }
+                ],
+                marketing: [
+                    { id: 1, platform: "Facebook Page", title: "ပစ္စည်းအသစ် မိတ်ဆက် ပိုစ့်တင်ရန်", date: "2026-04-05", type: "Image Post", status: "completed" },
+                    { id: 2, platform: "TikTok", title: "ထုတ်ကုန်အသုံးပြုပုံ တိုတို ဗီဒီယို", date: "2026-04-12", type: "Video/Reel", status: "pending" }
+                ],
+                tasks: [
+                    { id: 1, title: "ဘဏ်စာရင်း ရှင်းတမ်း စစ်ဆေးရန်", priority: "urgent", date: "2026-04-02", status: true },
+                    { id: 2, title: "ဝန်ထမ်းလစာ ထုတ်ပေးရန်", priority: "high", date: "2026-04-30", status: false }
+                ]
+            };
+            saveData();
+        }
+
+        function saveData() {
+            localStorage.setItem(getStorageKey(), JSON.stringify(appData));
+        }
+
+        // Tab Switching Logic
+        function switchToTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('text-brand-600', 'border-brand-600', 'border-b-2', 'font-semibold');
+                btn.classList.add('text-slate-500', 'font-medium');
+            });
+
+            document.getElementById(tabId).classList.remove('hidden');
+            const activeBtn = document.querySelector(`[data-tab="${tabId}"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('text-brand-600', 'border-brand-600', 'border-b-2', 'font-semibold');
+                activeBtn.classList.remove('text-slate-500', 'font-medium');
+            }
+
+            if (tabId === 'tab-dashboard') {
+                updateChart();
+            }
+        }
+
+        document.getElementById('navTabs').addEventListener('click', (e) => {
+            const btn = e.target.closest('button[data-tab]');
+            if (btn) {
+                switchToTab(btn.getAttribute('data-tab'));
+            }
+        });
+
+        // Month Navigation
+        document.getElementById('prevMonthBtn').addEventListener('click', () => {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            updateMonthDisplay();
+            loadData();
+        });
+
+        document.getElementById('nextMonthBtn').addEventListener('click', () => {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            updateMonthDisplay();
+            loadData();
+        });
+
+        function updateMonthDisplay() {
+            const display = document.getElementById('currentMonthDisplay');
+            display.innerText = `${myanmarMonths[currentMonth]} ${currentYear + 543}`; // Myanmar Buddhist Era or standard Gregorian year
+        }
+
+        // Modal Controls
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+        }
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        // Render All Components
+        function renderAll() {
+            updateMonthDisplay();
+            renderDashboard();
+            renderGoals();
+            renderWeeks();
+            renderFinance();
+            renderMarketing();
+            renderTasks();
+        }
+
+        // 1. Dashboard Render
+        function renderDashboard() {
+            document.getElementById('monthlyMottoInput').value = appData.motto || "";
+            
+            const totalGoals = appData.goals.length;
+            const completedGoals = appData.goals.filter(g => g.current >= g.target).length;
+            const goalPercent = totalGoals > 0 ? Math.round((completedGoals / totalGoals) * 100) : 0;
+
+            document.getElementById('dashGoalCount').innerHTML = `<i class="fa-solid fa-check-circle text-emerald-400"></i> ရည်မှန်းချက်: <b class="text-white">${completedGoals}/${totalGoals}</b> ပြီးစီး`;
+            document.getElementById('goalStatText').innerText = `${completedGoals} / ${totalGoals}`;
+            document.getElementById('goalPercentBadge').innerText = `${goalPercent}%`;
+            document.getElementById('dashGoalBar').style.width = `${goalPercent}%`;
+
+            const totalTasks = appData.tasks.length;
+            const completedTasks = appData.tasks.filter(t => t.status).length;
+            const urgentTasks = appData.tasks.filter(t => t.priority === 'urgent' && !t.status).length;
+
+            document.getElementById('dashTaskCount').innerHTML = `<i class="fa-solid fa-list text-amber-400"></i> နေ့စဉ် Tasks: <b class="text-white">${completedTasks}/${totalTasks}</b> ပြီးစီး`;
+            document.getElementById('dashTaskStat').innerText = `${completedTasks} / ${totalTasks} ပြီးစီး`;
+            document.getElementById('highPriorityBadge').innerText = `${urgentTasks} Urgent`;
+
+            // Finance calculation
+            let income = 0, expense = 0;
+            appData.finance.forEach(f => {
+                if (f.type === 'income') income += Number(f.amount);
+                else expense += Number(f.amount);
+            });
+            const net = income - expense;
+
+            document.getElementById('dashNetRevenue').innerText = `${net.toLocaleString()} ကျပ်`;
+            document.getElementById('dashRevTarget').innerHTML = `<i class="fa-solid fa-vault text-blue-400"></i> အသားတင်အမြတ်: <b class="text-white">${net.toLocaleString()}</b> ကျပ်`;
+            document.getElementById('dashRevDetails').innerText = `ဝင်ငွေ: ${income.toLocaleString()} | စရိတ်: ${expense.toLocaleString()}`;
+
+            // Week Summary List
+            const weekListContainer = document.getElementById('dashWeekSummaryList');
+            weekListContainer.innerHTML = '';
+            for (let i = 1; i <= 4; i++) {
+                const w = appData.weeks[i];
+                weekListContainer.innerHTML += `
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs space-y-1">
+                        <div class="font-bold text-slate-800 flex items-center justify-between">
+                            <span>Week ${i}: ${w.theme || 'မသတ်မှတ်ရသေးပါ'}</span>
+                            <span class="text-brand-600 text-[10px] bg-brand-50 px-2 py-0.5 rounded">ပတ်စဉ် ${i}</span>
+                        </div>
+                        <p class="text-slate-500 truncate">${w.tasks ? w.tasks.replace(/\n/g, ' | ') : 'လုပ်ငန်းစဉ်များ မရှိသေးပါ'}</p>
+                    </div>
+                `;
+            }
+
+            updateChart();
+        }
+
+        // Motto change listener
+        document.getElementById('monthlyMottoInput').addEventListener('input', (e) => {
+            appData.motto = e.target.value;
+            saveData();
+        });
+
+        // Chart.js initialization
+        function updateChart() {
+            const ctx = document.getElementById('financeOverviewChart').getContext('2d');
+            
+            let income = 0, expense = 0;
+            appData.finance.forEach(f => {
+                if (f.type === 'income') income += Number(f.amount);
+                else expense += Number(f.amount);
+            });
+
+            if (financeChartInstance) {
+                financeChartInstance.data.datasets[0].data = [income, expense, income - expense];
+                financeChartInstance.update();
+                return;
+            }
+
+            financeChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['စုစုပေါင်း ဝင်ငွေ', 'စုစုပေါင်း စရိတ်', 'အသားတင် အမြတ်'],
+                    datasets: [{
+                        label: 'ကျပ်ငွေ',
+                        data: [income, expense, income - expense],
+                        backgroundColor: ['#10b981', '#f43f5e', '#0284c7'],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        // 2. Goals Render & CRUD
+        document.getElementById('addGoalBtn').addEventListener('click', () => {
+            document.getElementById('goalForm').reset();
+            document.getElementById('goalId').value = '';
+            document.getElementById('goalModalTitle').innerText = 'Goal အသစ်ထည့်သွင်းရန်';
+            openModal('goalModal');
+        });
+
+        document.getElementById('goalForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('goalId').value;
+            const title = document.getElementById('goalTitleInput').value;
+            const category = document.getElementById('goalCategoryInput').value;
+            const current = Number(document.getElementById('goalCurrentInput').value);
+            const target = Number(document.getElementById('goalTargetInput').value);
+            const unit = document.getElementById('goalUnitInput').value;
+
+            if (id) {
+                const idx = appData.goals.findIndex(g => g.id == id);
+                if (idx !== -1) {
+                    appData.goals[idx] = { id: Number(id), title, category, current, target, unit };
+                }
+            } else {
+                const newGoal = { id: Date.now(), title, category, current, target, unit };
+                appData.goals.push(newGoal);
+            }
+
+            saveData();
+            closeModal('goalModal');
+            renderGoals();
+            renderDashboard();
+        });
+
+        function renderGoals() {
+            const container = document.getElementById('goalsContainer');
+            container.innerHTML = '';
+
+            if (appData.goals.length === 0) {
+                container.innerHTML = `<div class="col-span-2 text-center py-8 text-slate-400 text-xs">လစဉ် ရည်မှန်းချက်များ မရှိသေးပါ။ Goal အသစ်ထည့်ပါ။</div>`;
+                return;
+            }
+
+            appData.goals.forEach(g => {
+                const pct = g.target > 0 ? Math.min(100, Math.round((g.current / g.target) * 100)) : 0;
+                container.innerHTML += `
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <span class="text-[10px] font-bold text-brand-700 bg-brand-50 px-2 py-0.5 rounded">${g.category}</span>
+                                <h3 class="text-sm font-bold text-slate-900 mt-1">${g.title}</h3>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <button onclick="editGoal(${g.id})" class="text-slate-400 hover:text-brand-600 p-1" title="ပြင်ဆင်ရန်"><i class="fa-solid fa-pen text-xs"></i></button>
+                                <button onclick="deleteGoal(${g.id})" class="text-slate-400 hover:text-rose-600 p-1" title="ဖျက်ရန်"><i class="fa-solid fa-trash text-xs"></i></button>
+                            </div>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-xs font-semibold text-slate-600">
+                                <span>တိုးတက်မှု: ${g.current.toLocaleString()} / ${g.target.toLocaleString()} ${g.unit}</span>
+                                <span class="text-brand-600">${pct}%</span>
+                            </div>
+                            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                <div class="bg-brand-600 h-full rounded-full transition-all duration-300" style="width: ${pct}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function editGoal(id) {
+            const g = appData.goals.find(item => item.id === id);
+            if (!g) return;
+            document.getElementById('goalId').value = g.id;
+            document.getElementById('goalTitleInput').value = g.title;
+            document.getElementById('goalCategoryInput').value = g.category;
+            document.getElementById('goalCurrentInput').value = g.current;
+            document.getElementById('goalTargetInput').value = g.target;
+            document.getElementById('goalUnitInput').value = g.unit;
+            document.getElementById('goalModalTitle').innerText = 'Goal ပြင်ဆင်ရန်';
+            openModal('goalModal');
+        }
+
+        function deleteGoal(id) {
+            if (confirm('ဤပန်းတိုင်ကို ဖျက်ရန် သေချာပါသလား?')) {
+                appData.goals = appData.goals.filter(g => g.id !== id);
+                saveData();
+                renderGoals();
+                renderDashboard();
+            }
+        }
+
+        // 3. Weeks Render & Save
+        function renderWeeks() {
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById(`week${i}_theme`).value = appData.weeks[i].theme || '';
+                document.getElementById(`week${i}_tasks`).value = appData.weeks[i].tasks || '';
+            }
+        }
+
+        document.getElementById('saveWeeksBtn').addEventListener('click', () => {
+            for (let i = 1; i <= 4; i++) {
+                appData.weeks[i] = {
+                    theme: document.getElementById(`week${i}_theme`).value,
+                    tasks: document.getElementById(`week${i}_tasks`).value
+                };
+            }
+            saveData();
+            renderDashboard();
+            alert('အပတ်စဉ် မဟာဗျူဟာများကို အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ!');
+        });
+
+        // 4. Finance Render & CRUD
+        document.getElementById('addFinanceBtn').addEventListener('click', () => {
+            document.getElementById('financeForm').reset();
+            document.getElementById('financeId').value = '';
+            openModal('financeModal');
+        });
+
+        document.getElementById('financeForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('financeId').value;
+            const type = document.getElementById('finTypeInput').value;
+            const title = document.getElementById('finTitleInput').value;
+            const category = document.getElementById('finCatInput').value;
+            const amount = Number(document.getElementById('finAmountInput').value);
+
+            if (id) {
+                const idx = appData.finance.findIndex(f => f.id == id);
+                if (idx !== -1) {
+                    appData.finance[idx] = { id: Number(id), type, title, category, amount };
+                }
+            } else {
+                appData.finance.push({ id: Date.now(), type, title, category, amount });
+            }
+
+            saveData();
+            closeModal('financeModal');
+            renderFinance();
+            renderDashboard();
+        });
+
+        function renderFinance() {
+            const tbody = document.getElementById('financeTableBody');
+            tbody.innerHTML = '';
+
+            let totalInc = 0, totalExp = 0;
+
+            if (appData.finance.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-slate-400">ဘဏ္ဍာရေး စာရင်းများ မရှိသေးပါ။</td></tr>`;
+            } else {
+                appData.finance.forEach(f => {
+                    if (f.type === 'income') totalInc += Number(f.amount);
+                    else totalExp += Number(f.amount);
+
+                    tbody.innerHTML += `
+                        <tr class="border-b border-slate-100 hover:bg-slate-50/50">
+                            <td class="p-3">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold ${f.type === 'income' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                                    ${f.type === 'income' ? 'ဝင်ငွေ' : 'ထွက်ငွေ'}
+                                </span>
+                            </td>
+                            <td class="p-3 font-medium text-slate-800">${f.title}</td>
+                            <td class="p-3 text-slate-500">${f.category}</td>
+                            <td class="p-3 text-right font-bold ${f.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}">
+                                ${f.type === 'income' ? '+' : '-'}${Number(f.amount).toLocaleString()} ကျပ်
+                            </td>
+                            <td class="p-3 text-center">
+                                <button onclick="deleteFinance(${f.id})" class="text-slate-400 hover:text-rose-600 p-1"><i class="fa-solid fa-trash text-xs"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+
+            document.getElementById('finTotalIncome').innerText = `${totalInc.toLocaleString()} ကျပ်`;
+            document.getElementById('finTotalExpense').innerText = `${totalExp.toLocaleString()} ကျပ်`;
+            document.getElementById('finNetProfit').innerText = `${(totalInc - totalExp).toLocaleString()} ကျပ်`;
+        }
+
+        function deleteFinance(id) {
+            appData.finance = appData.finance.filter(f => f.id !== id);
+            saveData();
+            renderFinance();
+            renderDashboard();
+        }
+
+        // 5. Marketing Render & CRUD
+        document.getElementById('addMarketingBtn').addEventListener('click', () => {
+            document.getElementById('marketingForm').reset();
+            document.getElementById('mktId').value = '';
+            openModal('marketingModal');
+        });
+
+        document.getElementById('marketingForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('mktId').value;
+            const platform = document.getElementById('mktPlatformInput').value;
+            const title = document.getElementById('mktTitleInput').value;
+            const date = document.getElementById('mktDateInput').value;
+            const type = document.getElementById('mktTypeInput').value;
+
+            if (id) {
+                const idx = appData.marketing.findIndex(m => m.id == id);
+                if (idx !== -1) {
+                    appData.marketing[idx] = { id: Number(id), platform, title, date, type, status: appData.marketing[idx].status };
+                }
+            } else {
+                appData.marketing.push({ id: Date.now(), platform, title, date, type, status: 'pending' });
+            }
+
+            saveData();
+            closeModal('marketingModal');
+            renderMarketing();
+        });
+
+        function renderMarketing() {
+            const tbody = document.getElementById('marketingTableBody');
+            tbody.innerHTML = '';
+
+            if (appData.marketing.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-400">Content အစီအစဉ်များ မရှိသေးပါ။</td></tr>`;
+                return;
+            }
+
+            appData.marketing.forEach(m => {
+                tbody.innerHTML += `
+                    <tr class="border-b border-slate-100 hover:bg-slate-50/50">
+                        <td class="p-3 font-semibold text-slate-800">${m.platform}</td>
+                        <td class="p-3 text-slate-700">${m.title}</td>
+                        <td class="p-3 text-slate-500">${m.date}</td>
+                        <td class="p-3"><span class="bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-[10px]">${m.type}</span></td>
+                        <td class="p-3 text-center">
+                            <button onclick="toggleMarketingStatus(${m.id})" class="px-2.5 py-1 rounded-full text-[10px] font-bold ${m.status === 'completed' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+                                ${m.status === 'completed' ? 'တင်ပြီး' : 'ဆိုင်းငံ့'}
+                            </button>
+                        </td>
+                        <td class="p-3 text-center">
+                            <button onclick="deleteMarketing(${m.id})" class="text-slate-400 hover:text-rose-600 p-1"><i class="fa-solid fa-trash text-xs"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function toggleMarketingStatus(id) {
+            const m = appData.marketing.find(item => item.id === id);
+            if (m) {
+                m.status = m.status === 'completed' ? 'pending' : 'completed';
+                saveData();
+                renderMarketing();
+            }
+        }
+
+        function deleteMarketing(id) {
+            appData.marketing = appData.marketing.filter(m => m.id !== id);
+            saveData();
+            renderMarketing();
+        }
+
+        // 6. Tasks Render & CRUD
+        document.getElementById('addTaskBtn').addEventListener('click', () => {
+            document.getElementById('taskForm').reset();
+            document.getElementById('taskId').value = '';
+            openModal('taskModal');
+        });
+
+        document.getElementById('taskForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('taskId').value;
+            const title = document.getElementById('taskTitleInput').value;
+            const priority = document.getElementById('taskPriorityInput').value;
+            const date = document.getElementById('taskDateInput').value;
+
+            if (id) {
+                const idx = appData.tasks.findIndex(t => t.id == id);
+                if (idx !== -1) {
+                    appData.tasks[idx] = { id: Number(id), title, priority, date, status: appData.tasks[idx].status };
+                }
+            } else {
+                appData.tasks.push({ id: Date.now(), title, priority, date, status: false });
+            }
+
+            saveData();
+            closeModal('taskModal');
+            renderTasks();
+            renderDashboard();
+        });
+
+        document.querySelectorAll('.task-filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.task-filter-btn').forEach(b => {
+                    b.className = 'task-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 transition';
+                });
+                e.target.className = 'task-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 text-white transition';
+                activeTaskFilter = e.target.getAttribute('data-filter');
+                renderTasks();
+            });
+        });
+
+        function renderTasks() {
+            const tbody = document.getElementById('tasksTableBody');
+            tbody.innerHTML = '';
+
+            let filtered = appData.tasks;
+            if (activeTaskFilter === 'urgent') filtered = appData.tasks.filter(t => t.priority === 'urgent');
+            if (activeTaskFilter === 'pending') filtered = appData.tasks.filter(t => !t.status);
+            if (activeTaskFilter === 'completed') filtered = appData.tasks.filter(t => t.status);
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-400">လုပ်ငန်းတာဝန်များ မရှိသေးပါ။</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(t => {
+                let badgeColor = 'bg-slate-100 text-slate-700';
+                let badgeText = 'သာမန်';
+                if (t.priority === 'urgent') {
+                    badgeColor = 'bg-rose-100 text-rose-800';
+                    badgeText = 'အရေးကြီးဆုံး (Urgent)';
+                } else if (t.priority === 'high') {
+                    badgeColor = 'bg-amber-100 text-amber-800';
+                    badgeText = 'အရေးကြီး';
+                }
+
+                tbody.innerHTML += `
+                    <tr class="border-b border-slate-100 hover:bg-slate-50/50">
+                        <td class="p-3 text-center">
+                            <input type="checkbox" ${t.status ? 'checked' : ''} onchange="toggleTaskStatus(${t.id})" class="rounded text-brand-600 focus:ring-brand-500 w-4 h-4 cursor-pointer">
+                        </td>
+                        <td class="p-3 font-medium ${t.status ? 'line-through text-slate-400' : 'text-slate-800'}">${t.title}</td>
+                        <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${badgeColor}">${badgeText}</span></td>
+                        <td class="p-3 text-slate-500">${t.date}</td>
+                        <td class="p-3 text-center">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${t.status ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'}">
+                                ${t.status ? 'ပြီးမြောက်' : 'ဆောင်ရွက်ဆဲ'}
+                            </span>
+                        </td>
+                        <td class="p-3 text-center">
+                            <button onclick="deleteTask(${t.id})" class="text-slate-400 hover:text-rose-600 p-1"><i class="fa-solid fa-trash text-xs"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function toggleTaskStatus(id) {
+            const t = appData.tasks.find(item => item.id === id);
+            if (t) {
+                t.status = !t.status;
+                saveData();
+                renderTasks();
+                renderDashboard();
+            }
+        }
+
+        function deleteTask(id) {
+            appData.tasks = appData.tasks.filter(t => t.id !== id);
+            saveData();
+            renderTasks();
+            renderDashboard();
+        }
+
+        // Reset Demo data
+        document.getElementById('resetDemoBtn').addEventListener('click', () => {
+            if (confirm('ယခုလအတွက် အချက်အလက်အသစ်များဖြင့် ပြန်စရန် (Reset) သေချာပါသလား?')) {
+                localStorage.removeItem(getStorageKey());
+                initDefaultData();
+                renderAll();
+            }
+        });
+
+        // Initialize on load
+        window.onload = () => {
+            loadData();
+        };
+    </script>
+</body>
+</html>
