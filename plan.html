@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="my" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>လုပ်ငန်းရှင်များအတွက် တစ်လစာ အစီအစဉ်ဆွဲ App (Entrepreneur Monthly Planner)</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    },
+                    fontFamily: {
+                        myanmar: ['Padauk', 'Pyidaungsu', 'Noto Sans Myanmar', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Google Fonts for Myanmar Text -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', 'Padauk', 'Pyidaungsu', sans-serif;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+            body {
+                background: white;
+                color: black;
+            }
+        }
+    </style>
+</head>
+<body class="h-full text-slate-800 antialiased flex flex-col min-h-screen">
+
+    <!-- Top Navigation Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo & App Name -->
+                <div class="flex items-center gap-3">
+                    <div class="bg-gradient-to-tr from-brand-600 to-indigo-600 text-white p-2.5 rounded-xl shadow-md">
+                        <i class="fa-solid fa-briefcase text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-slate-900 leading-tight">BizPlanner PRO</h1>
+                        <p class="text-xs text-slate-500 font-medium">လုပ်ငန်းရှင်များအတွက် ၁ လစာ စီမံချက်</p>
+                    </div>
+                </div>
+
+                <!-- Active Month Display & Quick Controls -->
+                <div class="flex items-center gap-3">
+                    <div class="bg-slate-100 rounded-lg p-1 flex items-center gap-2 border border-slate-200">
+                        <button id="prevMonthBtn" class="p-1.5 hover:bg-white rounded-md text-slate-600 transition" title="ယခင်လ">
+                            <i class="fa-solid fa-chevron-left text-xs"></i>
+                        </button>
+                        <span id="currentMonthDisplay" class="text-sm font-semibold text-slate-700 px-2 min-w-[120px] text-center">
+                            ဧပြီ ၂၀၂၆
+                        </span>
+                        <button id="nextMonthBtn" class="p-1.5 hover:bg-white rounded-md text-slate-600 transition" title="နောက်လ">
+                            <i class="fa-solid fa-chevron-right text-xs"></i>
+                        </button>
+                    </div>
+
+                    <button onclick="window.print()" class="hidden sm:flex items-center gap-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold px-3 py-2 rounded-lg transition shadow-sm">
+                        <i class="fa-solid fa-print"></i>
+                        <span>ထုတ်ယူရန် (Print)</span>
+                    </button>
+
+                    <button id="resetDemoBtn" class="text-xs text-rose-600 hover:text-rose-700 border border-rose-200 bg-rose-50 hover:bg-rose-100 px-2.5 py-2 rounded-lg font-medium transition" title="အချက်အလက်သစ် ပြန်စရန်">
+                        <i class="fa-solid fa-rotate-left"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <div class="bg-white border-b border-slate-200 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <nav class="flex space-x-6 overflow-x-auto py-2" id="navTabs">
+                <button data-tab="tab-dashboard" class="tab-btn text-brand-600 border-brand-600 border-b-2 font-semibold pb-2 px-1 text-sm whitespace-nowrap flex items-center gap-2">
+                    <i class="fa-solid fa-chart-pie"></i> ပင်မ ဒက်ရှ်ဘုတ်
+                </button>
+                <button data-tab="tab-goals" class="tab-btn text-slate-500 hover:text-slate-700 font-medium pb-2 px-1 text-sm whitespace-nowrap flex items-center gap-2">
+                    <i class="fa-solid fa-bullseye"></i> လစဉ် Goals & KPIs
+                </button>
+                <button data-tab="tab-weeks" class="tab-btn text-slate-500 hover:text-slate-700 font-medium pb-2 px-1 text-sm whitespace-nowrap flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-week"></i> ၄ ပတ်စာ မဟာဗျူဟာ
+                </button>
+                <button data-tab="tab-finance" class="tab-btn text-slate-500 hover:text-slate-700 font-medium pb-2 px-1 text-sm whitespace-nowrap flex items-center gap-2">
+                    <i class="fa-solid fa-coins"></i> ဝင်ငွေ/ထွက်ငွေ ခန့်မှန်းချက်
+                </button>
+                <button data-tab="tab-marketing" class="tab-btn text-slate-500 hover:text-slate-700 font-medium pb-2 px-1 text-sm whitespace-nowrap flex items-center gap-2">
+                    <i class="fa-solid fa-rectangle-ad"></i> Marketing & Content
+                </button>
+                <button data-tab="tab-tasks" class="tab-btn text-slate-500 hover:text-slate-700 font-medium pb-2 px-1 text-sm whitespace-nowrap flex items-center gap-2">
+                    <i class="fa-solid fa-list-check"></i> နေ့စဉ် To-Do & Matrix
+                </button>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Body Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+        <!-- TAB 1: DASHBOARD OVERVIEW -->
+        <section id="tab-dashboard" class="tab-content block space-y-6">
+            <!-- Monthly Focus Banner -->
+            <div class="bg-gradient-to-r from-slate-900 via-indigo-900 to-brand-900 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+                <div class="absolute right-0 top-0 opacity-10 translate-x-10 -translate-y-10">
+                    <i class="fa-solid fa-rocket text-[180px]"></i>
+                </div>
+                <div class="relative z-10 space-y-3">
+                    <div class="flex items-center gap-2 text-brand-300 text-xs font-semibold tracking-wide uppercase">
+                        <i class="fa-solid fa-star"></i> လစဉ် အဓိက အာရုံစိုက်မှု (Monthly Main Theme)
+                    </div>
+                    <input type="text" id="monthlyMottoInput" class="bg-white/10 hover:bg-white/20 focus:bg-white/20 text-white placeholder-white/60 text-xl sm:text-2xl font-bold w-full rounded-lg px-3 py-1.5 border border-white/20 outline-none transition" placeholder="ဥပမာ - ရောင်းအား ၁.၅ ဆ မြှင့်တင်ရန်နှင့် မားကတ်တင်း စနစ်သစ် ကျင့်သုံးရန်...">
+                    <div class="flex flex-wrap gap-4 text-xs text-slate-300 pt-1">
+                        <span id="dashGoalCount"><i class="fa-solid fa-check-circle text-emerald-400"></i> ရည်မှန်းချက်: <b class="text-white">0/0</b> ပြီးစီး</span>
+                        <span id="dashTaskCount"><i class="fa-solid fa-list text-amber-400"></i> နေ့စဉ် Tasks: <b class="text-white">0/0</b> ပြီးစီး</span>
+                        <span id="dashRevTarget"><i class="fa-solid fa-vault text-blue-400"></i> မျှော်မှန်း ဝင်ငွေ: <b class="text-white">0</b> ကျပ်</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPI Cards Overview -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <!-- Goal Completion Card -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-semibold uppercase text-slate-500 tracking-wider">ရည်မှန်းချက် ပြီးစီးမှု</span>
+                        <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-0.5 rounded-full" id="goalPercentBadge">0%</span>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="text-2xl font-bold text-slate-800" id="goalStatText">0 / 0</div>
+                        <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                            <div id="dashGoalBar" class="bg-emerald-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Revenue Target Card -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-semibold uppercase text-slate-500 tracking-wider">ဝင်ငွေ ခန့်မှန်းချက်</span>
+                        <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded-full">ခန့်မှန်း</span>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-brand-600" id="dashNetRevenue">0 ကျပ်</div>
+                        <p class="text-xs text-slate-500 mt-1" id="dashRevDetails">မျှော်မှန်း ဝင်ငွေ - မရှိသေးပါ</p>
+                    </div>
+                </div>
+
+                <!-- Priority Tasks Card -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-semibold uppercase text-slate-500 tracking-wider">အဓိက ဦးစားပေး Tasks</span>
+                        <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2 py-0.5 rounded-full" id="highPriorityBadge">0 Urgent</span>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-slate-800" id="dashTaskStat">0 ပြီးစီး</div>
+                        <p class="text-xs text-slate-500 mt-1" id="dashTaskPending">အရေးကြီး လုပ်ငန်းစဉ်များ ပြည့်စုံရန် လိုသေးသည်</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts & Quick Overview Row -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Financial Projection Chart -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                    <h3 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-column text-brand-500"></i> လစဉ် ဝင်ငွေနှင့် စရိတ် မျှော်မှန်းချက် Graph
+                    </h3>
+                    <div class="h-64 relative">
+                        <canvas id="financeOverviewChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- 4-Week Key Strategy Summary -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col">
+                    <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center justify-between">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-layer-group text-indigo-500"></i> အပတ်စဉ် မဟာဗျူဟာများ အကျဉ်းချုပ်
+                        </span>
+                        <button onclick="switchToTab('tab-weeks')" class="text-xs text-brand-600 hover:underline">အပြည့်အစုံကြည့်ရန်</button>
+                    </h3>
+                    <div class="space-y-3 flex-1 overflow-y-auto pr-1" id="dashWeekSummaryList">
+                        <!-- Dynamic Week Snippets -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: MONTHLY GOALS & KPIS -->
+        <section id="tab-goals" class="tab-content hidden space-y-6">
+            <div class="flex items-center justify-between bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900">လစဉ် အဓိက ရည်မှန်းချက်များ (OKRs & KPIs)</h2>
+                    <p class="text-xs text-slate-500">ဤလအတွင်း မဖြစ်မနေ အကောင်အထည်ဖော်ရမည့် ကြီးမားသော ပန်းတိုင်များ ရေးဆွဲပါ</p>
+                </div>
+                <button id="addGoalBtn" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold px-3.5 py-2 rounded-lg flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-plus"></i> Goal သစ်ထည့်ရန်
+                </button>
+            </div>
+
+            <!-- Goal Items Grid -->
+            <div id="goalsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Dynamic goals inserted here -->
+            </div>
+        </section>
+
+        <!-- TAB 3: 4-WEEK STRATEGY EXECUTION -->
+        <section id="tab-weeks" class="tab-content hidden space-y-6">
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <h2 class="text-lg font-bold text-slate-900">၄ ပတ်စာ အပတ်စဉ် မဟာဗျူဟာနှင့် လုပ်ငန်းစဉ်များ</h2>
+                <p class="text-xs text-slate-500">တစ်လကို အပတ် ၄ ပတ်ခွဲပြီး မတူညီသော ခေါင်းစဉ်များဖြင့် အကောင်အထည်ဖော်ပါ</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <!-- Week 1 Card -->
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                    <div class="bg-slate-900 text-white px-4 py-3 flex items-center justify-between">
+                        <span class="font-bold text-sm flex items-center gap-2">
+                            <span class="bg-brand-500 text-white text-xs px-2 py-0.5 rounded">WEEK 1</span> ပထမပတ် (ရက်သတ္တပတ် ၁)
+                        </span>
+                        <i class="fa-solid fa-flag text-xs text-slate-400"></i>
+                    </div>
+                    <div class="p-4 space-y-3 flex-1">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">အပတ်စဉ် အဓိက ဦးတည်ချက် (Theme)</label>
+                            <input type="text" id="week1_theme" class="w-full text-xs font-medium border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-brand-500 outline-none" placeholder="ဥပမာ - Planning, Market Research & Campaign Launch">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">လုပ်ဆောင်ရမည့် အဓိက လုပ်ငန်းစဉ်များ</label>
+                            <textarea id="week1_tasks" rows="5" class="w-full text-xs border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-brand-500 outline-none leading-relaxed" placeholder="- ပစ္စည်းသစ် မားကတ်တင်း စတင်ရန်&#10;- တန်ဖိုးနည်း ကြော်ငြာ စမ်းသပ်ရန်&#10;- အဖွဲ့ဝင်များနှင့် အစည်းအဝေးပြုလုပ်ရန်"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Week 2 Card -->
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                    <div class="bg-slate-900 text-white px-4 py-3 flex items-center justify-between">
+                        <span class="font-bold text-sm flex items-center gap-2">
+                            <span class="bg-emerald-600 text-white text-xs px-2 py-0.5 rounded">WEEK 2</span> ဒုတိယပတ် (ရက်သတ္တပတ် ၂)
+                        </span>
+                        <i class="fa-solid fa-chart-line text-xs text-slate-400"></i>
+                    </div>
+                    <div class="p-4 space-y-3 flex-1">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">အပတ်စဉ် အဓိက ဦးတည်ချက် (Theme)</label>
+                            <input type="text" id="week2_theme" class="w-full text-xs font-medium border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-brand-500 outline-none" placeholder="ဥပမာ - Active Sales Drive & Customer Outreach">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">လုပ်ဆောင်ရမည့် အဓိက လုပ်ငန်းစဉ်များ</label>
+                            <textarea id="week2_tasks" rows="5" class="w-full text-xs border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-brand-500 outline-none leading-relaxed" placeholder="- ဖောက်သည်ဟောင်းများထံ ဆက်သွယ်ရန်&#10;- Promotion ကမ်ပိန်း အရှိန်မြှင့်ရန်&#10;- Lead များကို လိုက်လံ အတည်ပြုရန်"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Week 3 Card -->
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                    <div class="bg-slate-900 text-white px-4 py-3 flex items-center justify-between">
+                        <span class="font-bold text-sm flex items-center gap-2">
+                            <span class="bg-amber-600 text-white text-xs px-2 py-0.5 rounded">WEEK 3</span> တတိယပတ် (ရက်သတ္တပတ် ၃)
+                        </span>
+                        <i class="fa-solid fa-gears text-xs text-slate-400"></i>
+                    </div>
+                    <div class="p-4 space-y-3 flex-1">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">အပတ်စဉ် အဓိက ဦးတည်ချက် (Theme)</label>
+                            <input type="text" id="week3_theme" class="w-full text-xs font-medium border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-brand-500 outline-none" placeholder="ဥပမာ - Operations Optimization & Mid-Month Review">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">လုပ်ဆောင်ရမည့် အဓိက လုပ်ငန်းစဉ်များ</label>
+                            <textarea id="week3_tasks" rows="5" class="w-full text-xs border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-brand-500 outline-none leading-relaxed" placeholder="- ပစ္စည်းလက်ကျန် စစ်ဆေးရန်&#10;- မီဒီယာ စရိတ်များ ပြန်လည်သုံးသပ်ရန်&#10;- ဝန်ဆောင်မှု အရည်အသွေး စစ်ဆေးရန်"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Week 4 Card -->
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                    <div class="bg-slate-900 text-white px-4 py-3 flex items-center justify-between">
+                        <span class="font-bold text-sm flex items-center gap-2">
+                            <span class="bg-purple-600 text-white text-xs px-2 py-0.5 rounded">WEEK 4</span> စတုတ္ထပတ် (ရက်သတ္တပတ် ၄)
+                        </span>
+                        <i class="fa-solid fa-clipboard-check text-xs text-slate-400"></i>
+                    </div>
+                    <div class="p-4 space-y-3 flex-1">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">အပတ်စဉ် အဓိက ဦးတည်ချက် (Theme)</label>
+                            <input type="text" id="week4_theme" class="w-full text-xs font-medium border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-brand-500 outline-none" placeholder="ဥပမာ - Monthly Closing, Audit & Next Month Prep">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">လုပ်ဆောင်ရမည့် အဓိက လုပ်ငန်းစဉ်များ</label>
+                            <textarea id="week4_tasks" rows="5" class="w-full text-xs border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-brand-500 outline-none leading-relaxed" placeholder="- လချုပ် စာရင်း ပိတ်ရန်&#10;- ရောင်းအား KPI များ တွက်ချက်ရန်&#10;- နောက်လအတွက် စီမံချက် စတင်ဆွဲရန်"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex justify-end">
+                <button id="saveWeeksBtn" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold px-4 py-2.5 rounded-lg shadow-sm flex items-center gap-2 transition">
+                    <i class="fa-solid fa-floppy-disk"></i> မဟာဗျူဟာများ သိမ်းဆည်းမည်
+                </button>
+            </div>
+        </section>
+
+        <!-- TAB 4: FINANCIAL FORECAST -->
+        <section id="tab-finance" class="tab-content hidden space-y-6">
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-4">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900">လစဉ် ဝင်ငွေ/ထွက်ငွေ မျှော်မှန်းချက် (Financial Projection)</h2>
+                    <p class="text-xs text-slate-500">မျှော်မှန်းထားသော ရောင်းအား ဝင်ငွေများနှင့် မဖြစ်မနေ အသုံးပြုရမည့် လစဉ် စရိတ်များကို စာရင်းသွင်းပါ</p>
+                </div>
+                <div class="flex gap-2">
+                    <button id="addIncomeBtn" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-lg flex items-center gap-1 transition">
+                        <i class="fa-solid fa-plus"></i> ဝင်ငွေလမ်းကြောင်း သစ်
+                    </button>
+                    <button id="addExpenseBtn" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-3 py-2 rounded-lg flex items-center gap-1 transition">
+                        <i class="fa-solid fa-plus"></i> အသုံးစရိတ် သစ်
+                    </button>
+                </div>
+            </div>
+
+            <!-- Financial Calculation Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl">
+                    <span class="text-xs font-bold text-emerald-700 uppercase tracking-wider block">စုစုပေါင်း မျှော်မှန်း ဝင်ငွေ</span>
+                    <span class="text-2xl font-bold text-emerald-800 mt-1 block" id="totalProjectedIncome">0 ကျပ်</span>
+                </div>
+                <div class="bg-rose-50 border border-rose-200 p-4 rounded-xl">
+                    <span class="text-xs font-bold text-rose-700 uppercase tracking-wider block">စုစုပေါင်း မျှော်မှန်း စရိတ်</span>
+                    <span class="text-2xl font-bold text-rose-800 mt-1 block" id="totalProjectedExpense">0 ကျပ်</span>
+                </div>
+                <div class="bg-brand-50 border border-brand-200 p-4 rounded-xl">
+                    <span class="text-xs font-bold text-brand-700 uppercase tracking-wider block">မျှော်မှန်း အသားတင် အမြတ်</span>
+                    <span class="text-2xl font-bold text-brand-800 mt-1 block" id="netProjectedProfit">0 ကျပ်</span>
+                </div>
+            </div>
+
+            <!-- Income & Expense Lists -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Income Streams List -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="text-sm font-bold text-emerald-700 flex items-center gap-2 border-b border-slate-100 pb-2">
+                        <i class="fa-solid fa-arrow-trend-up"></i> မျှော်မှန်း ဝင်ငွေ လမ်းကြောင်းများ (Expected Incomes)
+                    </h3>
+                    <div id="incomeItemsList" class="space-y-3">
+                        <!-- Dynamic Incomes -->
+                    </div>
+                </div>
+
+                <!-- Expense Items List -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="text-sm font-bold text-rose-700 flex items-center gap-2 border-b border-slate-100 pb-2">
+                        <i class="fa-solid fa-arrow-trend-down"></i> မျှော်မှန်း အသုံးစရိတ်များ (Expected Expenses)
+                    </h3>
+                    <div id="expenseItemsList" class="space-y-3">
+                        <!-- Dynamic Expenses -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: MARKETING & CONTENT PLANNER -->
+        <section id="tab-marketing" class="tab-content hidden space-y-6">
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex justify-between items-center">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900">မားကတ်တင်းနှင့် Content ပြက္ခဒိန်</h2>
+                    <p class="text-xs text-slate-500">Social Media ပို့စ်များ၊ Ads ကမ်ပိန်းများနှင့် Promotions အစီအစဉ်များ</p>
+                </div>
+                <button id="addContentBtn" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold px-3.5 py-2 rounded-lg flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-plus"></i> Content/Campaign ထည့်ရန်
+                </button>
+            </div>
+
+            <!-- Content Calendar Grid / Table -->
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead>
+                        <tr class="bg-slate-100 border-b border-slate-200 text-slate-600 font-semibold uppercase tracking-wider">
+                            <th class="p-3">ရက်စွဲ / အပတ်</th>
+                            <th class="p-3">ခေါင်းစဉ် / အကြောင်းအရာ</th>
+                            <th class="p-3">Platform</th>
+                            <th class="p-3">အမျိုးအစား</th>
+                            <th class="p-3">Status</th>
+                            <th class="p-3 text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="contentTableBody" class="divide-y divide-slate-100">
+                        <!-- Dynamic Content Rows -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- TAB 6: DAILY TASKS & PRIORITY MATRIX -->
+        <section id="tab-tasks" class="tab-content hidden space-y-6">
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-3">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900">နေ့စဉ် To-Do နှင့် ဦးစားပေး Matrix (Eisenhower Matrix)</h2>
+                    <p class="text-xs text-slate-500">လုပ်ငန်းရှင်တစ်ဦး၏ အချိန်စီမံခန့်ခွဲမှုအတွက် အရေးကြီးပုံအလိုက် သီးသန့် ခွဲခြားပါ</p>
+                </div>
+                <button id="addTaskBtn" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold px-3.5 py-2 rounded-lg flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-plus"></i> Task သစ်ထည့်ရန်
+                </button>
+            </div>
+
+            <!-- Task Board Matrix -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <!-- Box 1: Urgent & Important -->
+                <div class="bg-rose-50/60 border border-rose-200 rounded-xl p-4 space-y-3">
+                    <div class="flex items-center justify-between border-b border-rose-200 pb-2">
+                        <span class="font-bold text-xs text-rose-800 flex items-center gap-1.5 uppercase">
+                            <i class="fa-solid fa-fire text-rose-600"></i> ၁။ အရေးကြီး + အရေးပေါ် (ချက်ချင်းလုပ်ရန်)
+                        </span>
+                        <span class="text-xs bg-rose-200 text-rose-800 font-bold px-2 py-0.5 rounded-full" id="countUrgentImp">0</span>
+                    </div>
+                    <div id="listUrgentImp" class="space-y-2 min-h-[100px]">
+                        <!-- Dynamic Items -->
+                    </div>
+                </div>
+
+                <!-- Box 2: Important, Not Urgent -->
+                <div class="bg-amber-50/60 border border-amber-200 rounded-xl p-4 space-y-3">
+                    <div class="flex items-center justify-between border-b border-amber-200 pb-2">
+                        <span class="font-bold text-xs text-amber-800 flex items-center gap-1.5 uppercase">
+                            <i class="fa-solid fa-calendar-check text-amber-600"></i> ၂။ အရေးကြီး + အရေးမပေါ် (ရက်စွဲသတ်မှတ်၍လုပ်ရန်)
+                        </span>
+                        <span class="text-xs bg-amber-200 text-amber-800 font-bold px-2 py-0.5 rounded-full" id="countNotUrgentImp">0</span>
+                    </div>
+                    <div id="listNotUrgentImp" class="space-y-2 min-h-[100px]">
+                        <!-- Dynamic Items -->
+                    </div>
+                </div>
+
+                <!-- Box 3: Urgent, Not Important -->
+                <div class="bg-blue-50/60 border border-blue-200 rounded-xl p-4 space-y-3">
+                    <div class="flex items-center justify-between border-b border-blue-200 pb-2">
+                        <span class="font-bold text-xs text-blue-800 flex items-center gap-1.5 uppercase">
+                            <i class="fa-solid fa-user-gear text-blue-600"></i> ၃။ အရေးမကြီး + အရေးပေါ် (လွှဲအပ်လုပ်ကိုင်ရန်)
+                        </span>
+                        <span class="text-xs bg-blue-200 text-blue-800 font-bold px-2 py-0.5 rounded-full" id="countUrgentNotImp">0</span>
+                    </div>
+                    <div id="listUrgentNotImp" class="space-y-2 min-h-[100px]">
+                        <!-- Dynamic Items -->
+                    </div>
+                </div>
+
+                <!-- Box 4: Not Urgent, Not Important -->
+                <div class="bg-slate-100 border border-slate-200 rounded-xl p-4 space-y-3">
+                    <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+                        <span class="font-bold text-xs text-slate-700 flex items-center gap-1.5 uppercase">
+                            <i class="fa-solid fa-trash-can text-slate-500"></i> ၄။ အရေးမကြီး + အရေးမပေါ် (လျှော့ချ/ဖျက်ပစ်ရန်)
+                        </span>
+                        <span class="text-xs bg-slate-200 text-slate-700 font-bold px-2 py-0.5 rounded-full" id="countNotUrgentNotImp">0</span>
+                    </div>
+                    <div id="listNotUrgentNotImp" class="space-y-2 min-h-[100px]">
+                        <!-- Dynamic Items -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL FOR GOAL ADD/EDIT -->
+    <div id="goalModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4">
+            <h3 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-2" id="goalModalTitle">Goal သစ် ထည့်သွင်းရန်</h3>
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Goal ခေါင်းစဉ် (ရည်မှန်းချက်)</label>
+                    <input type="text" id="goalTitleInput" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-brand-500 outline-none" placeholder="ဥပမာ - ရောင်းအား သိသိသာသာ တိုးတက်စေရန်">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">KPI တိုင်းတာချက် (Target Metric)</label>
+                    <input type="text" id="goalKpiInput" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-brand-500 outline-none" placeholder="ဥပမာ - Customer အသစ် ၅၀ ဦး ရရှိရန်">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">လက်ရှိ တိုးတက်မှု ရာခိုင်နှုန်း (%)</label>
+                    <input type="number" id="goalProgressInput" min="0" max="100" value="0" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-brand-500 outline-none">
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeModal('goalModal')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3 py-2 rounded-lg transition">မလုပ်တော့ပါ</button>
+                <button id="saveGoalBtn" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition">သိမ်းဆည်းမည်</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL FOR TASK ADD/EDIT -->
+    <div id="taskModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4">
+            <h3 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-2">Task သစ် ထည့်သွင်းရန်</h3>
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Task အကြောင်းအရာ</label>
+                    <input type="text" id="taskTitleInput" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-brand-500 outline-none" placeholder="ဥပမာ - ပန်းတိုင်သစ် အစည်းအဝေးပြုလုပ်ရန်">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Eisenhower Priority Matrix</label>
+                    <select id="taskPriorityInput" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-brand-500 outline-none bg-white">
+                        <option value="urgent_important">၁။ အရေးကြီး + အရေးပေါ် (Urgent & Important)</option>
+                        <option value="not_urgent_important">၂။ အရေးကြီး + အရေးမပေါ် (Not Urgent & Important)</option>
+                        <option value="urgent_not_important">၃။ အရေးမကြီး + အရေးပေါ် (Urgent & Not Important)</option>
+                        <option value="not_urgent_not_important">၄။ အရေးမကြီး + အရေးမပေါ် (Not Urgent & Not Important)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeModal('taskModal')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3 py-2 rounded-lg transition">မလုပ်တော့ပါ</button>
+                <button id="saveTaskBtn" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition">သိမ်းဆည်းမည်</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL FOR FINANCE ADD -->
+    <div id="financeModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4">
+            <h3 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-2" id="financeModalTitle">ဘဏ္ဍာရေး စာရင်း ထည့်ရန်</h3>
+            <input type="hidden" id="financeTypeInput" value="income">
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">အကြောင်းအရာ ခေါင်းစဉ်</label>
+                    <input type="text" id="financeTitleInput" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-brand-500 outline-none" placeholder="ဥပမာ - Product Sales / Facebook Ads Expense">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">ပမာဏ (ကျပ်)</label>
+                    <input type="number" id="financeAmountInput" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-brand-500 outline-none" placeholder="0">
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeModal('financeModal')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3 py-2 rounded-lg transition">မလုပ်တော့ပါ</button>
+                <button id="saveFinanceBtn" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition">သိမ်းဆည်းမည်</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL FOR CONTENT ADD -->
+    <div id="contentModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4">
+            <h3 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-2">Content/Campaign ထည့်ရန်</h3>
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">ရက်စွဲ / အပတ်</label>
+                    <input type="text" id="contentDateInput" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-brand-500 outline-none" placeholder="ဥပမာ - Week 1 (Mon)">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Content ခေါင်းစဉ် / အကြောင်းအရာ</label>
+                    <input type="text" id="contentTitleInput" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-brand-500 outline-none" placeholder="ဥပမာ - Product Launch Video & Promotion">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Platform</label>
+                    <select id="contentPlatformInput" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-brand-500 outline-none bg-white">
+                        <option value="Facebook">Facebook</option>
+                        <option value="TikTok">TikTok</option>
+                        <option value="Telegram / Viber">Telegram / Viber</option>
+                        <option value="Website">Website</option>
+                        <option value="Direct Campaign">Direct Campaign</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">အမျိုးအစား</label>
+                    <input type="text" id="contentTypeInput" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-brand-500 outline-none" placeholder="ဥပမာ - Video / Promotion / Educational">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Status</label>
+                    <select id="contentStatusInput" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-brand-500 outline-none bg-white">
+                        <option value="Planned">Planned (အစီအစဉ်ဆွဲပြီး)</option>
+                        <option value="In Progress">In Progress (ပြုလုပ်နေဆဲ)</option>
+                        <option value="Published">Published (တင်ပြီးပါပြီ)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeModal('contentModal')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3 py-2 rounded-lg transition">မလုပ်တော့ပါ</button>
+                <button id="saveContentBtn" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition">သိမ်းဆည်းမည်</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white text-xs font-medium px-4 py-3 rounded-xl shadow-2xl transition transform translate-y-20 opacity-0 z-50 flex items-center gap-2">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
+        <span id="toastMsg">အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ။</span>
+    </div>
+
+    <script>
+        // Default App State
+        const monthsMM = ["ဇန်နဝါရီ", "ဖေဖော်ဝါရီ", "မတ်", "ဧပြီ", "မေ", "ဇွန်", "ဇူလိုင်", "ဩဂုတ်", "စက်တင်ဘာ", "အောက်တိုဘာ", "နိုဝင်ဘာ", "ဒီဇင်ဘာ"];
+        let currentYear = 2026;
+        let currentMonthIdx = 3; // ဧပြီ (April)
+
+        // Mock Default Data Template
+        const defaultData = {
+            monthlyMotto: "လုပ်ငန်း ရောင်းအား ၁.၅ ဆ တိုးတက်စေရေးနှင့် မားကတ်တင်း စနစ်သစ် ကျင့်သုံးရန်",
+            goals: [
+                { id: 1, title: "ရောင်းအား ကျပ် သိန်း ၁၀၀ ရရှိရန်", kpi: "Revenue - 10,000,000 Ks", progress: 65 },
+                { id: 2, title: "ဖောက်သည် အသစ် ၅၀ ဦး ထပ်မံရရှိရန်", kpi: "50 New Clients", progress: 40 },
+                { id: 3, title: "Social Media Engagement ၂၀% တိုးရန်", kpi: "Reach & Likes Boost", progress: 80 }
+            ],
+            weeks: {
+                week1_theme: "Planning & Campaign Launch",
+                week1_tasks: "- လစဉ် ပန်းတိုင်များ အဖွဲ့ထံ ရှင်းလင်းရန်\n- မားကတ်တင်း Ads ကမ်ပိန်းသစ် စတင်ရန်\n- ကုန်ပစ္စည်း လက်ကျန် စစ်ဆေးရန်",
+                week2_theme: "Sales Drive & Direct Outreach",
+                week2_tasks: "- Direct Sales Lead များကို လိုက်လံ အတည်ပြုရန်\n- Customer Review & Feedback ရယူရန်\n- ပရိုမိုးရှင်း ပို့စ်များ တင်ရန်",
+                week3_theme: "Operations & Quality Control",
+                week3_tasks: "- ပို့ဆောင်ရေးနှင့် ဝန်ဆောင်မှု အရည်အသွေး စစ်ရန်\n- စရိတ်များ ပြန်လည် စိစစ်ရန်\n- အပတ်စဉ် ရလဒ်များ သုံးသပ်ရန်",
+                week4_theme: "Monthly Closing & Future Prep",
+                week4_tasks: "- လချုပ် စာရင်း ပိတ်ရန်\n- KPI ပြည့်မပြည့် စစ်ဆေးရန်\n- နောက်လအတွက် ပြင်ဆင်ချက်များ ဆွဲရန်"
+            },
+            incomes: [
+                { id: 1, title: "Main Products Sales (အဓိက ပစ္စည်း ရောင်းအား)", amount: 8500000 },
+                { id: 2, title: "Service & Consulting Fees", amount: 1500000 }
+            ],
+            expenses: [
+                { id: 1, title: "Facebook & Social Ads", amount: 1200000 },
+                { id: 2, title: "Staff Salary & Allowances", amount: 3500000 },
+                { id: 3, title: "Office Rent & Utilities", amount: 800000 }
+            ],
+            contents: [
+                { id: 1, date: "Week 1 (Mon)", title: "New Product Launch Video", platform: "Facebook", type: "Video", status: "Published" },
+                { id: 2, date: "Week 2 (Wed)", title: "Customer Success Story", platform: "TikTok", type: "Educational", status: "In Progress" },
+                { id: 3, date: "Week 3 (Fri)", title: "Special Weekend Promotion", platform: "Facebook", type: "Promotion", status: "Planned" }
+            ],
+            tasks: [
+                { id: 1, title: " Ads Budget ခွဲဝေပြင်ဆင်ရန်", priority: "urgent_important", completed: true },
+                { id: 2, title: " အဖွဲ့ဝင်များနှင့် အပတ်စဉ် အစည်းအဝေး", priority: "urgent_important", completed: false },
+                { id: 3, title: " Q3 အတွက် မဟာဗျူဟာ ရေးဆွဲရန်", priority: "not_urgent_important", completed: false },
+                { id: 4, title: " Delivery သတင်းအချက်အလက် စစ်ဆေးရန်", priority: "urgent_not_important", completed: true },
+                { id: 5, title: " မလိုလားအပ်သော အီးမေးလ်များ စစ်ဆေးခြင်း", priority: "not_urgent_not_important", completed: false }
+            ]
+        };
+
+        let appData = {};
+        let financeChart = null;
+
+        function getStorageKey() {
+            return `bizplanner_${currentYear}_${currentMonthIdx}`;
+        }
+
+        function loadAppData() {
+            const stored = localStorage.getItem(getStorageKey());
+            if (stored) {
+                try {
+                    appData = JSON.parse(stored);
+                } catch(e) {
+                    appData = JSON.parse(JSON.stringify(defaultData));
+                }
+            } else {
+                appData = JSON.parse(JSON.stringify(defaultData));
+            }
+            updateHeaderDisplay();
+            renderAllViews();
+        }
+
+        function saveData() {
+            localStorage.setItem(getStorageKey(), JSON.stringify(appData));
+            renderAllViews();
+            showToast("အချက်အလက်များ သိမ်းဆည်းပြီးပါပြီ။");
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2500);
+        }
+
+        function updateHeaderDisplay() {
+            document.getElementById('currentMonthDisplay').innerText = `${monthsMM[currentMonthIdx]} ${currentYear}`;
+        }
+
+        function switchToTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('text-brand-600', 'border-brand-600', 'border-b-2', 'font-semibold');
+                btn.classList.add('text-slate-500', 'font-medium');
+            });
+
+            const targetContent = document.getElementById(tabId);
+            if(targetContent) targetContent.classList.remove('hidden');
+
+            const targetBtn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
+            if(targetBtn) {
+                targetBtn.classList.add('text-brand-600', 'border-brand-600', 'border-b-2', 'font-semibold');
+                targetBtn.classList.remove('text-slate-500', 'font-medium');
+            }
+
+            if(tabId === 'tab-dashboard') {
+                renderFinanceChart();
+            }
+        }
+
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                switchToTab(this.getAttribute('data-tab'));
+            });
+        });
+
+        function renderDashboard() {
+            // Motto Input
+            const mottoInput = document.getElementById('monthlyMottoInput');
+            mottoInput.value = appData.monthlyMotto || '';
+
+            // Goal Stats
+            const totalGoals = appData.goals.length;
+            const avgProgress = totalGoals > 0 ? Math.round(appData.goals.reduce((acc, g) => acc + (g.progress || 0), 0) / totalGoals) : 0;
+            const completedGoals = appData.goals.filter(g => g.progress >= 100).length;
+
+            document.getElementById('goalPercentBadge').innerText = `${avgProgress}%`;
+            document.getElementById('goalStatText').innerText = `${completedGoals} / ${totalGoals} ပြီးစီး`;
+            document.getElementById('dashGoalBar').style.width = `${avgProgress}%`;
+            document.getElementById('dashGoalCount').innerHTML = `<i class="fa-solid fa-check-circle text-emerald-400"></i> ရည်မှန်းချက်: <b class="text-white">${completedGoals}/${totalGoals}</b> ပြီးစီး`;
+
+            // Finance Stats
+            const totalInc = appData.incomes.reduce((a, b) => a + Number(b.amount || 0), 0);
+            const totalExp = appData.expenses.reduce((a, b) => a + Number(b.amount || 0), 0);
+            const netProfit = totalInc - totalExp;
+
+            document.getElementById('dashNetRevenue').innerText = `${netProfit.toLocaleString()} ကျပ်`;
+            document.getElementById('dashRevDetails').innerText = `ဝင်ငွေ: ${totalInc.toLocaleString()} ကျပ် | စရိတ်: ${totalExp.toLocaleString()} ကျပ်`;
+            document.getElementById('dashRevTarget').innerHTML = `<i class="fa-solid fa-vault text-blue-400"></i> မျှော်မှန်းဝင်ငွေ: <b class="text-white">${totalInc.toLocaleString()}</b> ကျပ်`;
+
+            // Tasks Stats
+            const totalTasks = appData.tasks.length;
+            const doneTasks = appData.tasks.filter(t => t.completed).length;
+            const urgentTasks = appData.tasks.filter(t => t.priority === 'urgent_important' && !t.completed).length;
+
+            document.getElementById('highPriorityBadge').innerText = `${urgentTasks} Urgent`;
+            document.getElementById('dashTaskStat').innerText = `${doneTasks} / ${totalTasks} ပြီးစီး`;
+            document.getElementById('dashTaskPending').innerText = urgentTasks > 0 ? `အရေးကြီး အရေးပေါ် လုပ်ရန် ${urgentTasks} ခု ကျန်ပါသေးသည်` : 'အရေးကြီး လုပ်ငန်းစဉ်များ ပြီးစီးပါပြီ';
+            document.getElementById('dashTaskCount').innerHTML = `<i class="fa-solid fa-list text-amber-400"></i> နေ့စဉ် Tasks: <b class="text-white">${doneTasks}/${totalTasks}</b> ပြီးစီး`;
+
+            // Weekly Snippets
+            const weekSummaryList = document.getElementById('dashWeekSummaryList');
+            weekSummaryList.innerHTML = '';
+            for(let i=1; i<=4; i++) {
+                const theme = appData.weeks[`week${i}_theme`] || 'မသတ်မှတ်ရသေးပါ';
+                const div = document.createElement('div');
+                div.className = 'p-2.5 rounded-lg border border-slate-100 bg-slate-50/50 flex items-center justify-between text-xs';
+                div.innerHTML = `
+                    <div>
+                        <span class="font-bold text-slate-700">အပတ် ${i}:</span>
+                        <span class="text-slate-600 font-medium ml-1">${escapeHtml(theme)}</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-300 text-[10px]"></i>
+                `;
+                weekSummaryList.appendChild(div);
+            }
+
+            renderFinanceChart();
+        }
+
+        document.getElementById('monthlyMottoInput').addEventListener('change', function() {
+            appData.monthlyMotto = this.value;
+            saveData();
+        });
+
+        function renderGoals() {
+            const container = document.getElementById('goalsContainer');
+            container.innerHTML = '';
+
+            if (appData.goals.length === 0) {
+                container.innerHTML = `<div class="col-span-2 text-center py-8 text-slate-400 text-xs">ရည်မှန်းချက် ထည့်သွင်းထားခြင်း မရှိသေးပါ။ "Goal သစ်ထည့်ရန်" ကို နှိပ်ပါ</div>`;
+                return;
+            }
+
+            appData.goals.forEach(goal => {
+                const card = document.createElement('div');
+                card.className = 'bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3 relative group';
+                card.innerHTML = `
+                    <div class="flex items-start justify-between gap-2">
+                        <div>
+                            <h3 class="font-bold text-sm text-slate-800">${escapeHtml(goal.title)}</h3>
+                            <p class="text-xs text-slate-500 font-medium mt-0.5"><i class="fa-solid fa-bullseye text-brand-500 mr-1"></i>${escapeHtml(goal.kpi)}</p>
+                        </div>
+                        <button onclick="deleteGoal(${goal.id})" class="text-slate-300 hover:text-rose-600 text-xs p-1 transition" title="ဖျက်ပါ">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs font-semibold text-slate-600">
+                            <span>တိုးတက်မှု</span>
+                            <span class="text-brand-600">${goal.progress}%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                            <div class="bg-brand-500 h-full rounded-full transition-all duration-300" style="width: ${goal.progress}%"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 pt-1">
+                        <span class="text-xs text-slate-500">ရာခိုင်နှုန်း ပြင်ရန်:</span>
+                        <input type="range" min="0" max="100" value="${goal.progress}" onchange="updateGoalProgress(${goal.id}, this.value)" class="w-full accent-brand-600 h-1 bg-slate-200 rounded-lg cursor-pointer">
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function updateGoalProgress(id, val) {
+            const goal = appData.goals.find(g => g.id === id);
+            if(goal) {
+                goal.progress = Number(val);
+                saveData();
+            }
+        }
+
+        function deleteGoal(id) {
+            appData.goals = appData.goals.filter(g => g.id !== id);
+            saveData();
+        }
+
+        function renderWeeks() {
+            for(let i=1; i<=4; i++) {
+                document.getElementById(`week${i}_theme`).value = appData.weeks[`week${i}_theme`] || '';
+                document.getElementById(`week${i}_tasks`).value = appData.weeks[`week${i}_tasks`] || '';
+            }
+        }
+
+        document.getElementById('saveWeeksBtn').addEventListener('click', function() {
+            for(let i=1; i<=4; i++) {
+                appData.weeks[`week${i}_theme`] = document.getElementById(`week${i}_theme`).value;
+                appData.weeks[`week${i}_tasks`] = document.getElementById(`week${i}_tasks`).value;
+            }
+            saveData();
+        });
+
+        function renderFinance() {
+            const incList = document.getElementById('incomeItemsList');
+            const expList = document.getElementById('expenseItemsList');
+            incList.innerHTML = '';
+            expList.innerHTML = '';
+
+            let totalInc = 0;
+            appData.incomes.forEach(item => {
+                totalInc += Number(item.amount || 0);
+                const div = document.createElement('div');
+                div.className = 'flex items-center justify-between p-2.5 bg-slate-50 rounded-lg border border-slate-100 text-xs';
+                div.innerHTML = `
+                    <span class="font-medium text-slate-700">${escapeHtml(item.title)}</span>
+                    <div class="flex items-center gap-3">
+                        <span class="font-bold text-emerald-600">+${Number(item.amount).toLocaleString()} ကျပ်</span>
+                        <button onclick="deleteFinance('income', ${item.id})" class="text-slate-300 hover:text-rose-600"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                `;
+                incList.appendChild(div);
+            });
+
+            let totalExp = 0;
+            appData.expenses.forEach(item => {
+                totalExp += Number(item.amount || 0);
+                const div = document.createElement('div');
+                div.className = 'flex items-center justify-between p-2.5 bg-slate-50 rounded-lg border border-slate-100 text-xs';
+                div.innerHTML = `
+                    <span class="font-medium text-slate-700">${escapeHtml(item.title)}</span>
+                    <div class="flex items-center gap-3">
+                        <span class="font-bold text-rose-600">-${Number(item.amount).toLocaleString()} ကျပ်</span>
+                        <button onclick="deleteFinance('expense', ${item.id})" class="text-slate-300 hover:text-rose-600"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                `;
+                expList.appendChild(div);
+            });
+
+            document.getElementById('totalProjectedIncome').innerText = `${totalInc.toLocaleString()} ကျပ်`;
+            document.getElementById('totalProjectedExpense').innerText = `${totalExp.toLocaleString()} ကျပ်`;
+            
+            const net = totalInc - totalExp;
+            const netEl = document.getElementById('netProjectedProfit');
+            netEl.innerText = `${net.toLocaleString()} ကျပ်`;
+            netEl.className = `text-2xl font-bold mt-1 block ${net >= 0 ? 'text-brand-800' : 'text-rose-700'}`;
+        }
+
+        function deleteFinance(type, id) {
+            if(type === 'income') {
+                appData.incomes = appData.incomes.filter(i => i.id !== id);
+            } else {
+                appData.expenses = appData.expenses.filter(e => e.id !== id);
+            }
+            saveData();
+        }
+
+        function renderMarketing() {
+            const tbody = document.getElementById('contentTableBody');
+            tbody.innerHTML = '';
+
+            if(appData.contents.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Content အချက်အလက် ထည့်သွင်းထားခြင်း မရှိသေးပါ။</td></tr>`;
+                return;
+            }
+
+            appData.contents.forEach(item => {
+                let statusBadge = 'bg-slate-100 text-slate-600';
+                if(item.status === 'Published') statusBadge = 'bg-emerald-100 text-emerald-800';
+                if(item.status === 'In Progress') statusBadge = 'bg-amber-100 text-amber-800';
+
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50/80 transition';
+                tr.innerHTML = `
+                    <td class="p-3 font-semibold text-slate-700">${escapeHtml(item.date)}</td>
+                    <td class="p-3 font-medium text-slate-800">${escapeHtml(item.title)}</td>
+                    <td class="p-3 text-slate-600"><span class="bg-slate-100 px-2 py-0.5 rounded border border-slate-200">${escapeHtml(item.platform)}</span></td>
+                    <td class="p-3 text-slate-600">${escapeHtml(item.type)}</td>
+                    <td class="p-3"><span class="text-[11px] font-bold px-2 py-0.5 rounded-full ${statusBadge}">${escapeHtml(item.status)}</span></td>
+                    <td class="p-3 text-right">
+                        <button onclick="deleteContent(${item.id})" class="text-slate-300 hover:text-rose-600"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function deleteContent(id) {
+            appData.contents = appData.contents.filter(c => c.id !== id);
+            saveData();
+        }
+
+        function renderTasks() {
+            const boxes = {
+                urgent_important: document.getElementById('listUrgentImp'),
+                not_urgent_important: document.getElementById('listNotUrgentImp'),
+                urgent_not_important: document.getElementById('listUrgentNotImp'),
+                not_urgent_not_important: document.getElementById('listNotUrgentNotImp')
+            };
+
+            const counts = {
+                urgent_important: document.getElementById('countUrgentImp'),
+                not_urgent_important: document.getElementById('countNotUrgentImp'),
+                urgent_not_important: document.getElementById('countUrgentNotImp'),
+                not_urgent_not_important: document.getElementById('countNotUrgentNotImp')
+            };
+
+            Object.values(boxes).forEach(box => box.innerHTML = '');
+            const matrixCounts = { urgent_important: 0, not_urgent_important: 0, urgent_not_important: 0, not_urgent_not_important: 0 };
+
+            appData.tasks.forEach(task => {
+                const targetBox = boxes[task.priority] || boxes.urgent_important;
+                matrixCounts[task.priority]++;
+
+                const div = document.createElement('div');
+                div.className = `p-2.5 rounded-lg border bg-white flex items-center justify-between text-xs shadow-sm ${task.completed ? 'opacity-60 line-through bg-slate-50' : ''}`;
+                div.innerHTML = `
+                    <label class="flex items-center gap-2 cursor-pointer flex-1 mr-2">
+                        <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTaskDone(${task.id})" class="rounded text-brand-600 focus:ring-brand-500 h-4 w-4">
+                        <span class="text-slate-800 font-medium">${escapeHtml(task.title)}</span>
+                    </label>
+                    <button onclick="deleteTask(${task.id})" class="text-slate-300 hover:text-rose-600"><i class="fa-solid fa-xmark"></i></button>
+                `;
+                targetBox.appendChild(div);
+            });
+
+            Object.keys(counts).forEach(key => {
+                counts[key].innerText = matrixCounts[key] || 0;
+            });
+        }
+
+        function toggleTaskDone(id) {
+            const task = appData.tasks.find(t => t.id === id);
+            if(task) {
+                task.completed = !task.completed;
+                saveData();
+            }
+        }
+
+        function deleteTask(id) {
+            appData.tasks = appData.tasks.filter(t => t.id !== id);
+            saveData();
+        }
+
+        function renderFinanceChart() {
+            const ctx = document.getElementById('financeOverviewChart').getContext('2d');
+            
+            const totalInc = appData.incomes.reduce((a, b) => a + Number(b.amount || 0), 0);
+            const totalExp = appData.expenses.reduce((a, b) => a + Number(b.amount || 0), 0);
+            const netProfit = totalInc - totalExp;
+
+            if (financeChart) {
+                financeChart.destroy();
+            }
+
+            financeChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['မျှော်မှန်း ဝင်ငွေ', 'မျှော်မှန်း စရိတ်', 'အသားတင် အမြတ်'],
+                    datasets: [{
+                        label: 'ပမာဏ (ကျပ်)',
+                        data: [totalInc, totalExp, netProfit],
+                        backgroundColor: [
+                            'rgba(16, 185, 129, 0.85)',
+                            'rgba(244, 63, 94, 0.85)',
+                            'rgba(2, 132, 199, 0.85)'
+                        ],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                font: { family: 'Inter' }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        // Add Goal Event
+        document.getElementById('addGoalBtn').addEventListener('click', () => openModal('goalModal'));
+        document.getElementById('saveGoalBtn').addEventListener('click', () => {
+            const title = document.getElementById('goalTitleInput').value.trim();
+            const kpi = document.getElementById('goalKpiInput').value.trim();
+            const progress = Number(document.getElementById('goalProgressInput').value) || 0;
+
+            if(!title) return;
+
+            appData.goals.push({
+                id: Date.now(),
+                title,
+                kpi: kpi || 'Target Metric',
+                progress: Math.min(100, Math.max(0, progress))
+            });
+
+            document.getElementById('goalTitleInput').value = '';
+            document.getElementById('goalKpiInput').value = '';
+            closeModal('goalModal');
+            saveData();
+        });
+
+        // Add Task Event
+        document.getElementById('addTaskBtn').addEventListener('click', () => openModal('taskModal'));
+        document.getElementById('saveTaskBtn').addEventListener('click', () => {
+            const title = document.getElementById('taskTitleInput').value.trim();
+            const priority = document.getElementById('taskPriorityInput').value;
+
+            if(!title) return;
+
+            appData.tasks.push({
+                id: Date.now(),
+                title,
+                priority,
+                completed: false
+            });
+
+            document.getElementById('taskTitleInput').value = '';
+            closeModal('taskModal');
+            saveData();
+        });
+
+        // Add Finance Event
+        document.getElementById('addIncomeBtn').addEventListener('click', () => {
+            document.getElementById('financeModalTitle').innerText = 'မျှော်မှန်း ဝင်ငွေ ထည့်သွင်းရန်';
+            document.getElementById('financeTypeInput').value = 'income';
+            openModal('financeModal');
+        });
+
+        document.getElementById('addExpenseBtn').addEventListener('click', () => {
+            document.getElementById('financeModalTitle').innerText = 'မျှော်မှန်း စရိတ် ထည့်သွင်းရန်';
+            document.getElementById('financeTypeInput').value = 'expense';
+            openModal('financeModal');
+        });
+
+        document.getElementById('saveFinanceBtn').addEventListener('click', () => {
+            const type = document.getElementById('financeTypeInput').value;
+            const title = document.getElementById('financeTitleInput').value.trim();
+            const amount = Number(document.getElementById('financeAmountInput').value) || 0;
+
+            if(!title || amount <= 0) return;
+
+            const item = { id: Date.now(), title, amount };
+            if(type === 'income') appData.incomes.push(item);
+            else appData.expenses.push(item);
+
+            document.getElementById('financeTitleInput').value = '';
+            document.getElementById('financeAmountInput').value = '';
+            closeModal('financeModal');
+            saveData();
+        });
+
+        // Add Content Event
+        document.getElementById('addContentBtn').addEventListener('click', () => openModal('contentModal'));
+        document.getElementById('saveContentBtn').addEventListener('click', () => {
+            const date = document.getElementById('contentDateInput').value.trim();
+            const title = document.getElementById('contentTitleInput').value.trim();
+            const platform = document.getElementById('contentPlatformInput').value;
+            const type = document.getElementById('contentTypeInput').value.trim();
+            const status = document.getElementById('contentStatusInput').value;
+
+            if(!title) return;
+
+            appData.contents.push({
+                id: Date.now(),
+                date: date || 'Today',
+                title,
+                platform,
+                type: type || 'General',
+                status
+            });
+
+            document.getElementById('contentTitleInput').value = '';
+            closeModal('contentModal');
+            saveData();
+        });
+
+        // Prev & Next Month Navigation
+        document.getElementById('prevMonthBtn').addEventListener('click', () => {
+            if(currentMonthIdx === 0) {
+                currentMonthIdx = 11;
+                currentYear--;
+            } else {
+                currentMonthIdx--;
+            }
+            loadAppData();
+        });
+
+        document.getElementById('nextMonthBtn').addEventListener('click', () => {
+            if(currentMonthIdx === 11) {
+                currentMonthIdx = 0;
+                currentYear++;
+            } else {
+                currentMonthIdx++;
+            }
+            loadAppData();
+        });
+
+        // Reset Demo Data
+        document.getElementById('resetDemoBtn').addEventListener('click', () => {
+            appData = JSON.parse(JSON.stringify(defaultData));
+            saveData();
+            showToast("Demo Data အသစ်ဖြင့် ပြန်လည်စတင်ပြီးပါပြီ။");
+        });
+
+        // Helper Function
+        function escapeHtml(str) {
+            if(!str) return '';
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        function renderAllViews() {
+            renderDashboard();
+            renderGoals();
+            renderWeeks();
+            renderFinance();
+            renderMarketing();
+            renderTasks();
+        }
+
+        window.onload = function() {
+            loadAppData();
+        };
+    </script>
+</body>
+</html>
